@@ -64,7 +64,92 @@ PVPTab:Section({
     TextSize = 20,
     FontWeight = Enum.FontWeight.SemiBold
 })
+Lua
+-- บริการที่จำเป็น
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 
+-- ตัวแปรตั้งค่า (เชื่อมกับเมนูของคุณในรูป)
+local player = Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local mouse = player:GetMouse()
+
+-- ตัวแปรจาก GUI (ที่คุณต้องการ)
+local FOV_ENABLED = true      -- เชื่อมกับ "Show FOV"
+local FOV_RADIUS = 371       -- เชื่อมกับ "FOV Slider"
+local MAGIC_BULLET = true    -- เชื่อมกับ "Magic Bullet"
+local AIM_PART = "Head"      -- เชื่อมกับ "Aim Part"
+
+-- 1. สร้างวงกลม FOV (Visual)
+local fovCircle = Drawing.new("Circle")
+fovCircle.Visible = FOV_ENABLED
+fovCircle.Radius = FOV_RADIUS
+fovCircle.Color = Color3.fromRGB(255, 255, 0)
+fovCircle.Thickness = 1
+fovCircle.Filled = false
+fovCircle.Transparency = 1
+
+-- 2. ฟังก์ชันหาเป้าหมายที่ใกล้ที่สุดในระยะ FOV
+local function getClosestPlayerInFOV()
+    local nearestTarget = nil
+    local shortestDistance = FOV_RADIUS
+
+    for _, v in pairs(Players:GetPlayers()) do
+        if v ~= player and v.Character and v.Character:FindFirstChild(AIM_PART) then
+            -- เช็คว่าศัตรูตายหรือยัง
+            local humanoid = v.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid and humanoid.Health > 0 then
+                -- แปลงตำแหน่ง 3D เป็น 2D บนหน้าจอ
+                local screenPos, onScreen = camera:WorldToViewportPoint(v.Character[AIM_PART].Position)
+                
+                if onScreen then
+                    -- คำนวณระยะห่างจากจุดศูนย์กลางหน้าจอ
+                    local mousePos = Vector2.new(mouse.X, mouse.Y + 36) -- +36 เพื่อชดเชยแถบเมนูบน
+                    local distance = (Vector2.new(screenPos.X, screenPos.Y) - mousePos).Magnitude
+                    
+                    if distance < shortestDistance then
+                        nearestTarget = v.Character[AIM_PART]
+                        shortestDistance = distance
+                    end
+                end
+            end
+        end
+    end
+    return nearestTarget
+end
+
+-- 3. อัปเดตวงกลมและระบบ Magic Bullet ทุกเฟรม
+RunService.RenderStepped:Connect(function()
+    -- อัปเดตตำแหน่งวงกลม
+    if fovCircle.Visible then
+        fovCircle.Position = Vector2.new(mouse.X, mouse.Y + 36)
+        fovCircle.Radius = FOV_RADIUS
+    end
+
+    -- ตัวอย่างการใช้ Magic Bullet เมื่อมีการยิง
+    -- ในระบบจริง คุณต้องนำส่วนนี้ไปใส่ในฟังก์ชัน Fire ของอาวุธคุณ
+    local target = getClosestPlayerInFOV()
+    if target and MAGIC_BULLET then
+        -- ตรงนี้คือจุดที่ 'เส้นสีแดง' ในรูปของคุณจะลากไปหาเป้าหมาย
+        -- print("Locking on: " .. target.Parent.Name) 
+    end
+end)
+
+-- ฟังก์ชันสำหรับ Event ยิงกระสุน (RemoteEvent)
+local function onFireRequest()
+    local target = getClosestPlayerInFOV()
+    local targetPosition
+    
+    if target and MAGIC_BULLET then
+        targetPosition = target.Position -- ยิงไปที่หัวโดยตรง
+    else
+        targetPosition = mouse.Hit.Position -- ยิงไปที่จุดที่เมาส์ชี้ปกติ
+    end
+    
+    -- ส่งข้อมูลไปที่ Server
+    -- YourRemoteEvent:FireServer(targetPosition)
+end
 -- -----------------------------
 
 -- -----------------------------
