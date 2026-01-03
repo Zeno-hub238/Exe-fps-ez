@@ -1,0 +1,108 @@
+--[[
+
+    WindUI Minimal Example
+    
+    
+]]
+
+local WindUI
+
+do
+    local ok, result = pcall(function()
+        return require("./src/Init")
+    end)
+    
+    if ok then
+        WindUI = result
+    else 
+        WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
+    end
+end
+
+-- Window
+local Window = WindUI:CreateWindow({
+    Title = "Exe fps ez Hub", -- ชื่อ Window
+    Author = "Zeno-Hub238", --  Author
+    Folder = "ftgshub",
+    Icon = nil, -- 
+    IconSize = 22*2,
+    NewElements = true,
+    
+    HideSearchBar = false,
+    
+    OpenButton = {
+        Title = "Exe fps ez Hub", --  UI
+        CornerRadius = UDim.new(1,0),
+        StrokeThickness = 3,
+        Enabled = true,
+        Draggable = true,
+        OnlyMobile = false,
+        
+        Color = ColorSequence.new(
+            Color3.fromHex("#30FF6A"), 
+            Color3.fromHex("#e7ff2f")
+        ),
+        Icon = nil, -- 
+    },
+    
+    KeySystem = nil -- ปิด Key System
+})
+
+--  Tab
+local ElementsSection = Window:Section({ Title = "Elements" })
+
+-- -----------------------------
+
+-- -----------------------------
+local PVPTab = ElementsSection:Tab({
+    Title = "PVP",
+    Icon = nil
+})
+
+PVPTab:Section({
+    Title = "PVP Options",
+    TextSize = 20,
+    FontWeight = Enum.FontWeight.SemiBold
+})
+
+-- -----------------------------
+
+-- -----------------------------
+local ESPTab = ElementsSection:Tab({
+    Title = "ESP",
+    Icon = nil
+})
+
+ESPTab:Section({
+    Title = "ESP Options",
+    TextSize = 20,
+    FontWeight = Enum.FontWeight.SemiBold
+})
+
+-- -----------------------------
+
+-- -----------------------------
+local LootTab = ElementsSection:Tab({
+    Title = "เก็บของ 🎁",
+    Icon = nil
+})
+
+LootTab:Section({
+    Title = "Loot Options",
+    TextSize = 20,
+    FontWeight = Enum.FontWeight.SemiBold
+})
+
+-- -----------------------------
+
+-- -----------------------------
+local BodyTab = ElementsSection:Tab({
+    Title = "ร่างกาย 💪",
+    Icon = nil
+})
+
+BodyTab:Section({
+    Title = "Body Options",
+    TextSize = 20,
+    FontWeight = Enum.FontWeight.SemiBold
+})
