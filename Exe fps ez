@@ -63,8 +63,7 @@ PVPTab:Section({
     Title = "PVP Options",
     TextSize = 20,
     FontWeight = Enum.FontWeight.SemiBold
-})
-Lua
+}
 -- 1. ตั้งค่าเบื้องต้นและสร้าง FOV Circle
 local player = game.Players.LocalPlayer
 local camera = workspace.CurrentCamera
