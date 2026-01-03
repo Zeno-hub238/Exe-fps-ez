@@ -64,7 +64,6 @@ PVPTab:Section({
     TextSize = 20,
     FontWeight = Enum.FontWeight.SemiBold
 })
-Lua
 -- บริการที่จำเป็น
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
